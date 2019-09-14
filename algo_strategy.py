@@ -150,7 +150,7 @@ class AlgoStrategy(gamelib.AlgoCore):
         destructor_locations2=sorted(destructor_locations, key= lambda a:a[1], reverse=True)
         self.flag=1
         for i in encryptor_locations2:
-            if not game_state.contains_stationary_unit(i):
+            if not game_state.contains_stationary_unit(i) and game_state.turn_number<4:
                 self.flag=0
 
         if game_state.turn_number>0:
@@ -160,6 +160,28 @@ class AlgoStrategy(gamelib.AlgoCore):
                 game_state.attempt_spawn(DESTRUCTOR, encryptor_locations2)
             game_state.attempt_spawn(DESTRUCTOR, destructor_locations2)
             game_state.attempt_spawn(FILTER, filter_locations2)
+        
+        if game_state.turn_number>7:
+            dlocations2=[[4, 11], [5, 11], [22, 11], [23, 11], [24, 11], [25, 11],\
+                 [12, 10], [13, 10], [14, 10], [15, 10], [7, 8], [8, 8], [9, 8], \
+                     [10, 8], [18, 8], [19, 8], [20, 8], [21, 8]]
+            dlocations2=sorted(dlocations2, key= lambda a:a[1], reverse=True)
+            i=0
+            while game_state.get_resource(game_state.CORES)>10:
+                if i==len(dlocations2):
+                    break
+                
+                game_state.attempt_spawn(DESTRUCTOR, dlocations2[i] )
+                i+=1
+        
+        if game_state.get_resource(game_state.BITS)>12:
+            elocations=[[7, 9], [8, 9], [9, 9], [10, 9], [11, 9], [12, 9], [15, 9], [16, 9], [17, 9], [18, 9], [19, 9], [20, 9]]
+            game_state.attempt_spawn(ENCRYPTOR, elocations )
+
+        
+        
+        
+        
         
         
         
