@@ -57,7 +57,7 @@ class AlgoStrategy(gamelib.AlgoCore):
         gamelib.debug_write('Performing turn {} of your custom algo strategy'.format(game_state.turn_number))
         game_state.suppress_warnings(True)  #Comment or remove this line to enable warnings.
 
-        self.starter_strategy(game_state)
+        self.lightningcloud_strategy(game_state)
 
         game_state.submit_turn()
 
@@ -68,9 +68,9 @@ class AlgoStrategy(gamelib.AlgoCore):
     """
 
 
-    def starter_strategy(self, game_state):
+    def lightningcloud_strategy(self, game_state):
         """
-        For defense we will use a spread out layout and some Scramblers early on.
+        For defense we will use a spread out layout and 2 Scramblers early on.
         We will place destructors near locations the opponent managed to score on.
         For offense we will use long range EMPs if they place stationary units near the enemy's front.
         If there are no stationary units to attack in the front, we will send Pings to try and score quickly.
@@ -92,6 +92,7 @@ class AlgoStrategy(gamelib.AlgoCore):
                 # They don't have many units in the front so lets figure out their least defended area and send Pings there.
 
                 # Only spawn Ping's every other turn
+                ## @dev I don't like this ping strategy need to check it
                 # Sending more at once is better since attacks can only hit a single ping at a time
                 if game_state.turn_number % 2 == 1:
                     # To simplify we will just check sending them from back left and right
@@ -159,24 +160,10 @@ class AlgoStrategy(gamelib.AlgoCore):
 
     def emp_line_strategy(self, game_state):
         """
-        Build a line of the cheapest stationary unit so our EMP's can attack from long range.
+        Build a line of our EMP's can attack from long range with the help of destructor.
         """
-        # First let's figure out the cheapest unit
-        # We could just check the game rules, but this demonstrates how to use the GameUnit class
-        ## @dev remove these lines? simplly set to FILTER
-        stationary_units = [FILTER, DESTRUCTOR, ENCRYPTOR]
-        cheapest_unit = FILTER
-        for unit in stationary_units:
-            unit_class = gamelib.GameUnit(unit, game_state.config)
-            if unit_class.cost < gamelib.GameUnit(cheapest_unit, game_state.config).cost:
-                cheapest_unit = unit
-
-        # Now let's build out a line of stationary units. This will prevent our EMPs from running into the enemy base.
-        # Instead they will stay at the perfect distance to attack the front two rows of the enemy base.
-        for x in range(27, 5, -1):
-            game_state.attempt_spawn(cheapest_unit, [x, 11])
-
-        # Now spawn EMPs next to the line
+        ## @dev least attack location?
+        # Now spawn EMPs next to the destructor line
         # By asking attempt_spawn to spawn 1000 units, it will essentially spawn as many as we have resources for
         if game_state.get_resource(game_state.BITS) >= game_state.type_cost(EMP) * 4:
             game_state.attempt_spawn(EMP, [24, 10], 1000)
