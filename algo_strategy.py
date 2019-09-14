@@ -81,7 +81,7 @@ class AlgoStrategy(gamelib.AlgoCore):
         # First, place basic defenses
         self.build_defences(game_state)
         # Now build reactive defenses based on where the enemy scored
-        #self.build_reactive_defense(game_state)
+        self.build_reactive_defense(game_state)
 
         # If the turn is less than 5, stall with Scramblers and wait to see enemy's base
         
@@ -196,9 +196,32 @@ class AlgoStrategy(gamelib.AlgoCore):
         for location in self.scored_on_locations:
             # Build destructor one space above so that it doesn't block our own edge spawn locations
             build_location = [location[0], location[1]+1]
-            game_state.attempt_spawn(DESTRUCTOR, build_location)
-            filter_location=[location[0], location[1]+2]
-            game_state.attempt_spawn(FILTER, filter_location)
+
+            if build_location == [23, 10]:
+                continue
+            elif build_location == [20, 7]:
+                build_location = [19, 7]
+                game_state.attempt_spawn(DESTRUCTOR, build_location)
+
+            elif build_location == [6, 8]:
+                build_location = [7, 8]
+                game_state.attempt_spawn(DESTRUCTOR, build_location)
+                
+            elif build_location == [7, 7]:
+                build_location = [8, 7]
+                game_state.attempt_spawn(DESTRUCTOR, build_location)
+                filter_location = [8, 8]
+                game_state.attempt_spawn(FILTER, filter_location)
+
+            elif build_location == [22, 9]:
+                build_location = [21, 9]
+                game_state.attempt_spawn(DESTRUCTOR, build_location)
+                filter_location = [21, 8]
+                game_state.attempt_spawn(FILTER, filter_location)
+            else:
+                game_state.attempt_spawn(DESTRUCTOR, build_location)
+                filter_location=[location[0], location[1]+2]
+                game_state.attempt_spawn(FILTER, filter_location)
 
     def stall_with_scramblers(self, game_state, count = 3):
         """
@@ -291,46 +314,56 @@ class AlgoStrategy(gamelib.AlgoCore):
         for different turns, we need different amount of scramblers
         """
         large_attack = False    # a flag to mark if there is large_attack or not
-
+        game_state.attempt_spawn(SCRAMBLER, [21, 7])
+        if game_state.turn_number < 3 or game_state > 15:
+            game_state.attempt_spawn(SCRAMBLER, [6, 7])
+                
         # combine enemy's BITS and turn number to predict large attack
+        """
         if game_state.turn_number < 10:
             if game_state.get_resource(game_state.BITS, player_index = 1) >= 15:
-                self.stall_with_scramblers(game_state, count = 4)
-                large_attack = True
-            elif game_state.get_resource(game_state.BITS, player_index = 1) >= 8:
                 self.stall_with_scramblers(game_state, count = 2)
                 large_attack = True
+            elif game_state.get_resource(game_state.BITS, player_index = 1) >= 8:
+                large_attack = True
 
-        elif game_state.turn_number < 20:
+        el
+        """
+        if game_state.turn_number < 20:
             if game_state.get_resource(game_state.BITS, player_index = 1) >= 15:
-                self.stall_with_scramblers(game_state, count = 4)
+                self.stall_with_scramblers(game_state, count = 2)
                 large_attack = True
             elif game_state.get_resource(game_state.BITS, player_index = 1) >= 10:
-                self.stall_with_scramblers(game_state, count = 3)
+                self.stall_with_scramblers(game_state, count = 1)
                 large_attack = True
 
         elif game_state.turn_number < 30:
             if game_state.get_resource(game_state.BITS, player_index = 1) >= 17:
-                self.stall_with_scramblers(game_state, count = 5)
+                self.stall_with_scramblers(game_state, count = 3)
                 large_attack = True
             if game_state.get_resource(game_state.BITS, player_index = 1) >= 10:
-                self.stall_with_scramblers(game_state, count = 3)
+                self.stall_with_scramblers(game_state, count = 1)
                 large_attack = True
 
         else:
             if game_state.get_resource(game_state.BITS, player_index = 1) >= 18:
-                self.stall_with_scramblers(game_state, count = 5)
+                self.stall_with_scramblers(game_state, count = 3)
                 large_attack = True
             if game_state.get_resource(game_state.BITS, player_index = 1) >= 12:
-                self.stall_with_scramblers(game_state, count = 4)
+                self.stall_with_scramblers(game_state, count = 2)
                 large_attack = True
         
         # even if there is no large_attack, release a small amount of scramblers is a must
+        """
         if large_attack == False:
+            if game_state.turn_number < 3:
+                game_state.attempt_spawn(SCRAMBLER, [6, 7])
             if game_state.turn_number < 20:
-                self.stall_with_scramblers(game_state, count = 2)
+                game_state.attempt_spawn(SCRAMBLER, [21, 7])
             else:
-                self.stall_with_scramblers(game_state, count = 2)   
+                game_state.attempt_spawn(SCRAMBLER, [21, 7])
+                game_state.attempt_spawn(SCRAMBLER, [6, 7])   
+        """
 
         return large_attack             
 
@@ -348,7 +381,7 @@ class AlgoStrategy(gamelib.AlgoCore):
                 game_state.attempt_spawn(PING, best_location, 1000)
 
         elif game_state.turn_number < 20:
-            if game_state.get_resource(game_state.BITS) >= game_state.type_cost(EMP) * 2 + game_state.type_cost(PING) * 8:
+            if game_state.get_resource(game_state.BITS) >= game_state.type_cost(EMP) * 1 + game_state.type_cost(PING) * 8:
                 best_location = self.least_damage_spawn_location(game_state, spawn_location_options)
                 # attempt to locate fixed amount EMPs + as many PINGs as possible
                 game_state.attempt_spawn(EMP, best_location, 2)
