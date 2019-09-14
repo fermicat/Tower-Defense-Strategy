@@ -32,6 +32,7 @@ class AlgoStrategy(gamelib.AlgoCore):
         """
         gamelib.debug_write('Configuring your custom algo strategy...')
         self.config = config
+        self.flag=1
         global FILTER, ENCRYPTOR, DESTRUCTOR, PING, EMP, SCRAMBLER
         FILTER = config["unitInformation"][0]["shorthand"]
         ENCRYPTOR = config["unitInformation"][1]["shorthand"]
@@ -133,59 +134,39 @@ class AlgoStrategy(gamelib.AlgoCore):
         # More community tools available at: https://terminal.c1games.com/rules#Download
 
         # Place destructors that attack enemy units
-        destructor_locations = [[0, 13], [27, 13], [3, 12], [15, 12], [24, 12]]
+        destructor_locations = [[0, 13], [1, 12], [27, 13]]
         # attempt_spawn will try to spawn units if we have resources, and will check if a blocking unit is already there
         
         # Place filters in front of destructors to soak up damage for them
-        filter_locations = [[1, 13], [3, 13], [12, 13], [15, 13], [18, 13], [21, 13], [24, 13], [26, 13]]
+        #filter_locations = [[1, 13], [3, 13], [12, 13], [15, 13], [18, 13], [21, 13], [24, 13], [26, 13]]
         game_state.attempt_spawn(DESTRUCTOR, destructor_locations)
-        game_state.attempt_spawn(FILTER, filter_locations)
+        #game_state.attempt_spawn(FILTER, filter_locations)
         
-        destructor_locations2 = [[1, 12], [25, 12], [26, 12], [2, 11], [9, 11], [11, 11]]
-        encryptor_locations2 = [[2, 12], [8, 12], [9, 12], [10, 12], [11, 12], [13, 12], [14, 12],\
-             [16, 12], [17, 12], [19, 12], [20, 12], [22, 12], [23, 12], [3, 11], [4, 9], [5, 9], \
-                 [6, 9], [7, 9], [8, 9], [9, 9]]
-        filter_locations2=[[9,13]]
+        
+        encryptor_locations2 = [[4, 12], [5, 12], [7, 12], [8, 12], [10, 12], [11, 12], \
+             [13, 12], [14, 12], [16, 12], [17, 12], [19, 12], [20, 12], [22, 12], [23, 12], [25, 12], [26, 12]]
+        filter_locations2=[[1, 13], [3, 13], [6, 13], [9, 13], [12, 13], [15, 13], [18, 13], [21, 13], [24, 13], [27, 13]]
         encryptor_locations2=sorted(encryptor_locations2, key= lambda a:a[1], reverse=True)
-        destructor_locations2=sorted(destructor_locations2, key= lambda a:a[1], reverse=True)
-        if game_state.turn_number>1:
-            game_state.attempt_spawn(ENCRYPTOR, encryptor_locations2)
+        filter_locations2=sorted(filter_locations2, key= lambda a:a[1], reverse=True)
+        destructor_locations2=sorted(destructor_locations, key= lambda a:a[1], reverse=True)
+        self.flag=1
+        for i in encryptor_locations2:
+            if not game_state.contains_stationary_unit(i):
+                self.flag=0
+
+        if game_state.turn_number>0:
+            if self.flag==0:
+                game_state.attempt_spawn(ENCRYPTOR, encryptor_locations2)
+            if self.flag==1:
+                game_state.attempt_spawn(DESTRUCTOR, encryptor_locations2)
             game_state.attempt_spawn(DESTRUCTOR, destructor_locations2)
             game_state.attempt_spawn(FILTER, filter_locations2)
-
-        """ lend=len(destructor_locations2)
-        lenf=len(filter_locations2)
-        ndestructor=game_state.number_affordable(DESTRUCTOR)
         
-        if ndestructor>3:
-            i=0
-            indlist=range(lend)
-            while i< ndestructor-3:
-                
-                indlist=list(indlist)
-                if len(indlist)<1:
-                    break
-                ind=int(random.sample(indlist, 1)[0])
+        
+        
+        
+        
 
-                if game_state.can_spawn(DESTRUCTOR,destructor_locations2[ind]):
-                    game_state.attempt_spawn(DESTRUCTOR, destructor_locations2[ind])
-                    i+=1
-                else:
-                    indlist.remove(ind)   
-        i=0
-        indlist=range(lenf)
-        while True:
-            indlist=list(indlist)
-            
-            if len(indlist)<1 or game_state.get_resource(game_state.CORES)<4:
-                break
-            ind=int(random.sample(indlist, 1)[0])
-            if game_state.can_spawn(FILTER,filter_locations2[ind]):
-                    game_state.attempt_spawn(FILTER, filter_locations2[ind])
-            else:
-                indlist.remove(ind) """
-
-                
 
 
 
