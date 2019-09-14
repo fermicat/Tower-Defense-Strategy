@@ -57,7 +57,7 @@ class AlgoStrategy(gamelib.AlgoCore):
         gamelib.debug_write('Performing turn {} of your custom algo strategy'.format(game_state.turn_number))
         game_state.suppress_warnings(True)  #Comment or remove this line to enable warnings.
 
-        self.lightningcloud_strategy(game_state)
+        self.starter_strategy(game_state)
 
         game_state.submit_turn()
 
@@ -68,7 +68,7 @@ class AlgoStrategy(gamelib.AlgoCore):
     """
 
 
-    def lightningcloud_strategy(self, game_state):
+    def starter_strategy(self, game_state):
         """
         For defense we will use a spread out layout and 2 Scramblers early on.
         We will place destructors near locations the opponent managed to score on.
