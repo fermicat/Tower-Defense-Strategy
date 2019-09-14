@@ -144,7 +144,7 @@ class AlgoStrategy(gamelib.AlgoCore):
         
         encryptor_locations2 = [[4, 12], [5, 12], [7, 12], [8, 12], [10, 12], [11, 12], \
              [13, 12], [14, 12], [16, 12], [17, 12], [19, 12], [20, 12], [22, 12], [23, 12], [25, 12], [26, 12]]
-        filter_locations2=[[1, 13], [2, 13], [4, 13], [6, 13], [9, 13], [12, 13], [15, 13], [18, 13], [21, 13],\
+        filter_locations2=[[1, 13],  [4, 13], [6, 13], [9, 13], [12, 13], [15, 13], [18, 13], [21, 13],\
              [24, 13], [25, 13], [26, 13], [27, 13]]
         encryptor_locations2=sorted(encryptor_locations2, key= lambda a:a[1], reverse=True)
         filter_locations2=sorted(filter_locations2, key= lambda a:a[1], reverse=True)
