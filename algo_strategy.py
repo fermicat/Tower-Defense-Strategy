@@ -199,9 +199,7 @@ class AlgoStrategy(gamelib.AlgoCore):
             # Build destructor one space above so that it doesn't block our own edge spawn locations
             build_location = [location[0], location[1]+1]
 
-            if build_location == [23, 10]:
-                continue
-            elif build_location == [20, 7]:
+            if build_location == [20, 7]:
                 build_location = [19, 7]
                 game_state.attempt_spawn(DESTRUCTOR, build_location)
 
@@ -215,11 +213,6 @@ class AlgoStrategy(gamelib.AlgoCore):
                 filter_location = [8, 8]
                 game_state.attempt_spawn(FILTER, filter_location)
 
-            elif build_location == [22, 9]:
-                build_location = [21, 9]
-                game_state.attempt_spawn(DESTRUCTOR, build_location)
-                filter_location = [21, 8]
-                game_state.attempt_spawn(FILTER, filter_location)
             else:
                 game_state.attempt_spawn(DESTRUCTOR, build_location)
                 filter_location=[location[0], location[1]+2]
@@ -373,7 +366,7 @@ class AlgoStrategy(gamelib.AlgoCore):
         """
         This is the big attack when we have enough armys 
         """
-        spawn_location_options = [[24, 10], [23, 9], [14, 0], [13, 0]]
+        spawn_location_options = [[14, 0], [13, 0]]
 
         if game_state.turn_number < 10:
             if game_state.get_resource(game_state.BITS) >= game_state.type_cost(EMP) * 1 + game_state.type_cost(PING) * 5:        
