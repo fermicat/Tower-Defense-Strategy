@@ -163,7 +163,8 @@ class AlgoStrategy(gamelib.AlgoCore):
                 game_state.attempt_spawn(DESTRUCTOR, encryptor_locations2)
             game_state.attempt_spawn(FILTER, filter_locations2)
             game_state.attempt_spawn(DESTRUCTOR, destructor_locations2)
-            game_state.attempt_spawn(ENCRYPTOR, encryptor_locations3)    
+            if game_state.get_resource(game_state.CORES)>10:
+                game_state.attempt_spawn(ENCRYPTOR, encryptor_locations3)    
         
         if game_state.turn_number>5:
             dlocations2=[[4, 12], [5, 12], [22, 11], [23, 11], [24, 11], [25, 11], [7, 10], [8, 10], [9, 10],\
@@ -181,6 +182,7 @@ class AlgoStrategy(gamelib.AlgoCore):
         if game_state.get_resource(game_state.BITS)>=12:
             elocations=[[13, 7], [14, 7], [15, 7], [13, 6], [14, 6], [15, 6]]
             game_state.attempt_spawn(ENCRYPTOR, elocations )
+
         
         
         
