@@ -83,10 +83,22 @@ class AlgoStrategy(gamelib.AlgoCore):
         # If the turn is less than 5, stall with Scramblers and wait to see enemy's base
         if game_state.turn_number < 5:
             self.stall_with_scramblers(game_state, count = 2)
+            ## @dev steal tower
+
         else:
             # defend large attack, especially a chain of PING
-            self.scramblers_defend_large_attack(game_state)
+            large_defense = self.scramblers_defend_large_attack(game_state)
 
+            ## @dev steal tower
+            if game_state.turn_number < 10 and large_defense == False:
+                True
+            
+            # @dev big attack
+            if large_defense == False:
+                self.long_march(game_state)
+
+            # this is starter's choice
+            """
             # Now let's analyze the enemy base to see where their defenses are concentrated.
             # If they have many units in the front we can build a line for our EMPs to attack them at long range.
             if self.detect_enemy_unit(game_state, unit_type=None, valid_x=None, valid_y=[14, 15]) > 10:             ## @dev only y = 14, 15 ?????
@@ -106,6 +118,8 @@ class AlgoStrategy(gamelib.AlgoCore):
                 # Lastly, if we have spare cores, let's build some Encryptors to boost our Pings' health.
                 encryptor_locations = [[13, 2], [14, 2], [13, 3], [14, 3]]
                 game_state.attempt_spawn(ENCRYPTOR, encryptor_locations)
+
+            """
 
     def build_defences(self, game_state):
         """
@@ -151,7 +165,7 @@ class AlgoStrategy(gamelib.AlgoCore):
         # While we have remaining bits to spend lets send out scramblers randomly.
         while count > 0 and game_state.get_resource(game_state.BITS) >= game_state.type_cost(SCRAMBLER) and len(deploy_locations) > 0:
             # Choose a random deploy location.
-            deploy_index = random.randint(0, len(deploy_locations) - 1)                 ## @dev put a weight on random?
+            deploy_index = random.randint(0, len(deploy_locations) - 1)
             deploy_location = deploy_locations[deploy_index]
             
             game_state.attempt_spawn(SCRAMBLER, deploy_location)
@@ -270,8 +284,44 @@ class AlgoStrategy(gamelib.AlgoCore):
             if game_state.turn_number < 20:
                 self.stall_with_scramblers(game_state, count = 2)
             else:
-                self.stall_with_scramblers(game_state, count = 3)                
+                self.stall_with_scramblers(game_state, count = 3)   
 
+        return large_attack             
+
+    def long_march(self, game_state):
+        """
+        This is the big attack when we have enough armys 
+        """
+        if game_state.turn_number < 10:
+            if game_state.get_resource(game_state.BITS) >= game_state.type_cost(EMP) * 2 + game_state.type_cost(PING) * 3:
+                spawn_location_options = [[24, 10], [23, 9], [3, 10], [4, 9], [14, 0], [13, 0]]
+                best_location = self.least_damage_spawn_location(game_state, spawn_location_options)
+                # attempt to locate fixed amount EMPs + as many PINGs as possible
+                game_state.attempt_spawn(EMP, best_location, 2)
+                game_state.attempt_spawn(PING, best_location, 1000)
+
+        elif game_state.turn_number < 20:
+            if game_state.get_resource(game_state.BITS) >= game_state.type_cost(EMP) * 3 + game_state.type_cost(PING) * 5:
+                spawn_location_options = [[24, 10], [23, 9], [3, 10], [4, 9], [14, 0], [13, 0]]
+                best_location = self.least_damage_spawn_location(game_state, spawn_location_options)
+                # attempt to locate fixed amount EMPs + as many PINGs as possible
+                game_state.attempt_spawn(EMP, best_location, 3)
+                game_state.attempt_spawn(PING, best_location, 1000)
+
+        elif game_state.turn_number < 30:
+            if game_state.get_resource(game_state.BITS) >= game_state.type_cost(EMP) * 3 + game_state.type_cost(PING) * 6:
+                spawn_location_options = [[24, 10], [23, 9], [3, 10], [4, 9], [14, 0], [13, 0]]
+                best_location = self.least_damage_spawn_location(game_state, spawn_location_options)
+                # attempt to locate fixed amount EMPs + as many PINGs as possible
+                game_state.attempt_spawn(EMP, best_location, 3)
+                game_state.attempt_spawn(PING, best_location, 1000)
+        else:
+            if game_state.get_resource(game_state.BITS) >= game_state.type_cost(EMP) * 4 + game_state.type_cost(PING) * 6:
+                spawn_location_options = [[24, 10], [23, 9], [3, 10], [4, 9], [14, 0], [13, 0]]
+                best_location = self.least_damage_spawn_location(game_state, spawn_location_options)
+                # attempt to locate fixed amount EMPs + as many PINGs as possible
+                game_state.attempt_spawn(EMP, best_location, 4)
+                game_state.attempt_spawn(PING, best_location, 1000)
 
 
 if __name__ == "__main__":
