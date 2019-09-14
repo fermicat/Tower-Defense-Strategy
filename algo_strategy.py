@@ -84,6 +84,14 @@ class AlgoStrategy(gamelib.AlgoCore):
         #self.build_reactive_defense(game_state)
 
         # If the turn is less than 5, stall with Scramblers and wait to see enemy's base
+        if game_state.turn_number == 3:
+            if game_state.get_resource(game_state.BITS) >= game_state.type_cost(EMP) * 2:
+                spawn_location_options = [[24, 10], [23, 9], [14, 0], [13, 0]]
+                best_location = self.least_damage_spawn_location(game_state, spawn_location_options)
+                # attempt to locate fixed amount EMPs + as many PINGs as possible
+                game_state.attempt_spawn(EMP, best_location, 2)
+                game_state.attempt_spawn(PING, best_location, 1000)
+
         if game_state.turn_number < 5:
             self.stall_with_scramblers(game_state, count = 1)
             ## @dev steal tower
@@ -162,15 +170,6 @@ class AlgoStrategy(gamelib.AlgoCore):
         
         
         
-        
-        
-
-
-
-
-
-
-        
 
     def build_reactive_defense(self, game_state):
         """
@@ -211,20 +210,7 @@ class AlgoStrategy(gamelib.AlgoCore):
             units can occupy the same space.
             """
 
-    def emp_line_strategy(self, game_state):
-        """
-        Build a line of our EMP's can attack from long range with the help of destructor.
-        """
-        
-        # Now spawn EMPs next to the destructor line
-        # By asking attempt_spawn to spawn 1000 units, it will essentially spawn as many as we have resources for
-        if game_state.get_resource(game_state.BITS) >= game_state.type_cost(EMP) * 4:
-            # find the best location
-            spawn_location_options = [[24, 10], [23, 9], [3, 10], [4, 9]]
-            best_location = self.least_damage_spawn_location(game_state, spawn_location_options)
-            # attempt to locate as many EMPs as possible
-            game_state.attempt_spawn(EMP, best_location, 1000)
-
+    
     def least_damage_spawn_location(self, game_state, location_options):
         """
         This function will help us guess which location is the safest to spawn moving units from.
