@@ -132,7 +132,7 @@ class AlgoStrategy(gamelib.AlgoCore):
         # More community tools available at: https://terminal.c1games.com/rules#Download
 
         # Place destructors that attack enemy units
-        destructor_locations = [[0, 13], [1, 12], [27, 13]]
+        destructor_locations = [[0, 13], [1, 12], [25, 12], [26, 12], [2, 11]]
         # attempt_spawn will try to spawn units if we have resources, and will check if a blocking unit is already there
         
         # Place filters in front of destructors to soak up damage for them
