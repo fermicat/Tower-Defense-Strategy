@@ -292,17 +292,17 @@ class AlgoStrategy(gamelib.AlgoCore):
         """
         This is the big attack when we have enough armys 
         """
+        spawn_location_options = [[24, 10], [23, 9], [3, 10], [4, 9], [14, 0], [13, 0]]
+
         if game_state.turn_number < 10:
-            if game_state.get_resource(game_state.BITS) >= game_state.type_cost(EMP) * 2 + game_state.type_cost(PING) * 3:
-                spawn_location_options = [[24, 10], [23, 9], [3, 10], [4, 9], [14, 0], [13, 0]]
+            if game_state.get_resource(game_state.BITS) >= game_state.type_cost(EMP) * 2 + game_state.type_cost(PING) * 3:        
                 best_location = self.least_damage_spawn_location(game_state, spawn_location_options)
                 # attempt to locate fixed amount EMPs + as many PINGs as possible
                 game_state.attempt_spawn(EMP, best_location, 2)
                 game_state.attempt_spawn(PING, best_location, 1000)
 
         elif game_state.turn_number < 20:
-            if game_state.get_resource(game_state.BITS) >= game_state.type_cost(EMP) * 3 + game_state.type_cost(PING) * 5:
-                spawn_location_options = [[24, 10], [23, 9], [3, 10], [4, 9], [14, 0], [13, 0]]
+            if game_state.get_resource(game_state.BITS) >= game_state.type_cost(EMP) * 3 + game_state.type_cost(PING) * 4:
                 best_location = self.least_damage_spawn_location(game_state, spawn_location_options)
                 # attempt to locate fixed amount EMPs + as many PINGs as possible
                 game_state.attempt_spawn(EMP, best_location, 3)
@@ -310,14 +310,12 @@ class AlgoStrategy(gamelib.AlgoCore):
 
         elif game_state.turn_number < 30:
             if game_state.get_resource(game_state.BITS) >= game_state.type_cost(EMP) * 3 + game_state.type_cost(PING) * 6:
-                spawn_location_options = [[24, 10], [23, 9], [3, 10], [4, 9], [14, 0], [13, 0]]
                 best_location = self.least_damage_spawn_location(game_state, spawn_location_options)
                 # attempt to locate fixed amount EMPs + as many PINGs as possible
                 game_state.attempt_spawn(EMP, best_location, 3)
                 game_state.attempt_spawn(PING, best_location, 1000)
         else:
             if game_state.get_resource(game_state.BITS) >= game_state.type_cost(EMP) * 4 + game_state.type_cost(PING) * 6:
-                spawn_location_options = [[24, 10], [23, 9], [3, 10], [4, 9], [14, 0], [13, 0]]
                 best_location = self.least_damage_spawn_location(game_state, spawn_location_options)
                 # attempt to locate fixed amount EMPs + as many PINGs as possible
                 game_state.attempt_spawn(EMP, best_location, 4)
