@@ -82,8 +82,11 @@ class AlgoStrategy(gamelib.AlgoCore):
 
         # If the turn is less than 5, stall with Scramblers and wait to see enemy's base
         if game_state.turn_number < 5:
-            self.stall_with_scramblers(game_state)
+            self.stall_with_scramblers(game_state, count = 2)
         else:
+            # defend large attack, especially a chain of PING
+            self.scramblers_defend_large_attack(game_state)
+
             # Now let's analyze the enemy base to see where their defenses are concentrated.
             # If they have many units in the front we can build a line for our EMPs to attack them at long range.
             if self.detect_enemy_unit(game_state, unit_type=None, valid_x=None, valid_y=[14, 15]) > 10:             ## @dev only y = 14, 15 ?????
@@ -132,12 +135,11 @@ class AlgoStrategy(gamelib.AlgoCore):
             build_location = [location[0], location[1]+1]
             game_state.attempt_spawn(DESTRUCTOR, build_location)
 
-    def stall_with_scramblers(self, game_state):
+    def stall_with_scramblers(self, game_state, count = 3):
         """
         Send out Scramblers at random locations to defend our base from enemy moving units.
         """
-        # count the total scrambler, default = 2 to save BITs
-        count = 2
+        # count the total scrambler, default = 3 to save BITs
 
         # We can spawn moving units on our edges so a list of all our edge locations
         friendly_edges = game_state.game_map.get_edge_locations(game_state.game_map.BOTTOM_LEFT) + game_state.game_map.get_edge_locations(game_state.game_map.BOTTOM_RIGHT)
@@ -147,12 +149,13 @@ class AlgoStrategy(gamelib.AlgoCore):
         deploy_locations = self.filter_blocked_locations(friendly_edges, game_state)
         
         # While we have remaining bits to spend lets send out scramblers randomly.
-        while count > 2 and game_state.get_resource(game_state.BITS) >= game_state.type_cost(SCRAMBLER) and len(deploy_locations) > 0:
+        while count > 0 and game_state.get_resource(game_state.BITS) >= game_state.type_cost(SCRAMBLER) and len(deploy_locations) > 0:
             # Choose a random deploy location.
             deploy_index = random.randint(0, len(deploy_locations) - 1)                 ## @dev put a weight on random?
             deploy_location = deploy_locations[deploy_index]
             
             game_state.attempt_spawn(SCRAMBLER, deploy_location)
+            count -= 1
             """
             We don't have to remove the location since multiple information 
             units can occupy the same space.
@@ -162,11 +165,15 @@ class AlgoStrategy(gamelib.AlgoCore):
         """
         Build a line of our EMP's can attack from long range with the help of destructor.
         """
-        ## @dev least attack location?
+        
         # Now spawn EMPs next to the destructor line
         # By asking attempt_spawn to spawn 1000 units, it will essentially spawn as many as we have resources for
         if game_state.get_resource(game_state.BITS) >= game_state.type_cost(EMP) * 4:
-            game_state.attempt_spawn(EMP, [24, 10], 1000)
+            # find the best location
+            spawn_location_options = [[24, 10], [23, 9], [3, 10], [4, 9]]
+            best_location = self.least_damage_spawn_location(game_state, spawn_location_options)
+            # attempt to locate as many EMPs as possible
+            game_state.attempt_spawn(EMP, best_location, 1000)
 
     def least_damage_spawn_location(self, game_state, location_options):
         """
@@ -223,6 +230,48 @@ class AlgoStrategy(gamelib.AlgoCore):
                 gamelib.debug_write("Got scored on at: {}".format(location))
                 self.scored_on_locations.append(location)
                 gamelib.debug_write("All locations: {}".format(self.scored_on_locations))
+
+    def scramblers_defend_large_attack(self, game_state):
+        """
+        This method is used to predict if enemy is going to release huge attack, 
+        especially with a large chain of PING
+        for different turns, there is different standard to release scramblers.
+        for different turns, we need different amount of scramblers
+        """
+        large_attack = False    # a flag to mark if there is large_attack or not
+
+        # combine enemy's BITS and turn number to predict large attack
+        if game_state.turn_number < 10:
+            if game_state.get_resource(game_state.BITS, player_index = 1) >= 10:
+                self.stall_with_scramblers(game_state, count = 3)
+                large_attack = True
+
+        elif game_state.turn_number < 20:
+            if game_state.get_resource(game_state.BITS, player_index = 1) >= 12:
+                self.stall_with_scramblers(game_state, count = 3)
+                large_attack = True
+
+        elif game_state.turn_number < 30:
+            if game_state.get_resource(game_state.BITS, player_index = 1) >= 15:
+                self.stall_with_scramblers(game_state, count = 4)
+                large_attack = True
+
+        elif game_state.turn_number < 50:
+            if game_state.get_resource(game_state.BITS, player_index = 1) >= 18:
+                self.stall_with_scramblers(game_state, count = 5)
+                large_attack = True
+        else:
+            if game_state.get_resource(game_state.BITS, player_index = 1) >= 18:
+                self.stall_with_scramblers(game_state, count = 6)
+                large_attack = True
+        
+        # even if there is no large_attack, release a small amount of scramblers is a must
+        if large_attack == False:
+            if game_state.turn_number < 20:
+                self.stall_with_scramblers(game_state, count = 2)
+            else:
+                self.stall_with_scramblers(game_state, count = 3)                
+
 
 
 if __name__ == "__main__":
