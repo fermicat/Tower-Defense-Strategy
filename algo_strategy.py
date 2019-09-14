@@ -145,7 +145,7 @@ class AlgoStrategy(gamelib.AlgoCore):
         encryptor_locations2 = [[4, 12], [5, 12], [7, 12], [8, 12], [10, 12], [11, 12], \
              [13, 12], [14, 12], [16, 12], [17, 12], [19, 12], [20, 12], [22, 12], [23, 12], [25, 12], [26, 12]]
         filter_locations2=[[1, 13], [4, 13], [6, 13], [9, 13], [12, 13], [15, 13], [18, 13], [21, 13],\
-             [25, 13], [26, 13], [27, 13]]
+             [25, 13], [26, 13], [27, 13],[24,13]]
         encryptor_locations2=sorted(encryptor_locations2, key= lambda a:a[1], reverse=True)
         filter_locations2=sorted(filter_locations2, key= lambda a:a[0], reverse=True)
         destructor_locations2=sorted(destructor_locations, key= lambda a:a[1], reverse=True)
@@ -187,8 +187,7 @@ class AlgoStrategy(gamelib.AlgoCore):
             elocations=[[13, 7], [14, 7], [15, 7], [13, 6], [14, 6], [15, 6]]
             game_state.attempt_spawn(ENCRYPTOR, elocations )
 
-        if self.detect_enemy_unit(game_state, unit_type=None, valid_x=[6,20], valid_y=[14, 27]) < 10:
-            game_state.attempt_remove([13,12]) 
+
         
 
     def build_reactive_defense(self, game_state):
