@@ -96,8 +96,7 @@ class AlgoStrategy(gamelib.AlgoCore):
                 True
             
             # @dev big attack
-            if large_defense == False:
-                self.long_march(game_state)
+            self.long_march(game_state)
 
             # this is starter's choice
             """
@@ -232,7 +231,6 @@ class AlgoStrategy(gamelib.AlgoCore):
             """
 
     def emp_line_strategy(self, game_state):
-        return
         """
         Build a line of our EMP's can attack from long range with the help of destructor.
         """
@@ -313,26 +311,26 @@ class AlgoStrategy(gamelib.AlgoCore):
 
         # combine enemy's BITS and turn number to predict large attack
         if game_state.turn_number < 10:
-            if game_state.get_resource(game_state.BITS, player_index = 1) >= 10:
+            if game_state.get_resource(game_state.BITS, player_index = 1) >= 8:
                 self.stall_with_scramblers(game_state, count = 3)
                 large_attack = True
 
         elif game_state.turn_number < 20:
-            if game_state.get_resource(game_state.BITS, player_index = 1) >= 12:
+            if game_state.get_resource(game_state.BITS, player_index = 1) >= 10:
                 self.stall_with_scramblers(game_state, count = 3)
                 large_attack = True
 
         elif game_state.turn_number < 30:
-            if game_state.get_resource(game_state.BITS, player_index = 1) >= 15:
+            if game_state.get_resource(game_state.BITS, player_index = 1) >= 10:
                 self.stall_with_scramblers(game_state, count = 4)
                 large_attack = True
 
         elif game_state.turn_number < 50:
-            if game_state.get_resource(game_state.BITS, player_index = 1) >= 18:
+            if game_state.get_resource(game_state.BITS, player_index = 1) >= 12:
                 self.stall_with_scramblers(game_state, count = 5)
                 large_attack = True
         else:
-            if game_state.get_resource(game_state.BITS, player_index = 1) >= 18:
+            if game_state.get_resource(game_state.BITS, player_index = 1) >= 12:
                 self.stall_with_scramblers(game_state, count = 6)
                 large_attack = True
         
