@@ -309,7 +309,7 @@ class AlgoStrategy(gamelib.AlgoCore):
         """
         large_attack = False    # a flag to mark if there is large_attack or not
         game_state.attempt_spawn(SCRAMBLER, [21, 7])
-        if game_state.turn_number < 3 or game_state > 15:
+        if game_state.turn_number < 3 or game_state.number > 15:
             game_state.attempt_spawn(SCRAMBLER, [6, 7])
                 
         # combine enemy's BITS and turn number to predict large attack
