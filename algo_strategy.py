@@ -83,8 +83,10 @@ class AlgoStrategy(gamelib.AlgoCore):
         #self.build_reactive_defense(game_state)
 
         # If the turn is less than 5, stall with Scramblers and wait to see enemy's base
-        if game_state.turn_number < 5:
-            self.stall_with_scramblers(game_state, count = 2)
+        if game_state.turn < 2:
+            return
+        elif game_state.turn_number < 5:
+            self.stall_with_scramblers(game_state, count = 1)
             ## @dev steal tower
 
         else:
@@ -310,6 +312,9 @@ class AlgoStrategy(gamelib.AlgoCore):
         large_attack = False    # a flag to mark if there is large_attack or not
 
         # combine enemy's BITS and turn number to predict large attack
+        if game_state.get_resource(game_state.BITS, player_index = 1) >= 15:
+            self.stall_with_scramblers(game_state, count = 6)
+            large_attack = True
         if game_state.turn_number < 10:
             if game_state.get_resource(game_state.BITS, player_index = 1) >= 8:
                 self.stall_with_scramblers(game_state, count = 3)
@@ -325,21 +330,17 @@ class AlgoStrategy(gamelib.AlgoCore):
                 self.stall_with_scramblers(game_state, count = 4)
                 large_attack = True
 
-        elif game_state.turn_number < 50:
-            if game_state.get_resource(game_state.BITS, player_index = 1) >= 12:
-                self.stall_with_scramblers(game_state, count = 5)
-                large_attack = True
         else:
             if game_state.get_resource(game_state.BITS, player_index = 1) >= 12:
-                self.stall_with_scramblers(game_state, count = 6)
+                self.stall_with_scramblers(game_state, count = 5)
                 large_attack = True
         
         # even if there is no large_attack, release a small amount of scramblers is a must
         if large_attack == False:
             if game_state.turn_number < 20:
-                self.stall_with_scramblers(game_state, count = 2)
+                self.stall_with_scramblers(game_state, count = 1)
             else:
-                self.stall_with_scramblers(game_state, count = 3)   
+                self.stall_with_scramblers(game_state, count = 2)   
 
         return large_attack             
 
