@@ -176,7 +176,7 @@ class AlgoStrategy(gamelib.AlgoCore):
                 if i==len(dlocations2):
                     break
                 if game_state.contains_stationary_unit(dlocations2[i]):
-                    for unit in game_state.game_map[dlocations2[i]]
+                    for unit in game_state.game_map[dlocations2[i]]:
                         if unit.unit_type == ENCRYPTOR:
                             game_state.attempt_remove(dlocations2[i])
                     
