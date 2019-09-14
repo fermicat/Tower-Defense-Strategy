@@ -166,17 +166,20 @@ class AlgoStrategy(gamelib.AlgoCore):
             if game_state.get_resource(game_state.CORES)>15:
                 game_state.attempt_spawn(ENCRYPTOR, encryptor_locations3)    
         
-        if game_state.turn_number>4:
+        if game_state.turn_number>5:
             dlocations2=[[4, 12], [5, 12], [22, 11], [23, 11], [24, 11], [25, 11], [7, 10], [8, 10], [9, 10],\
                  [12, 10], [13, 10], [14, 10], [15, 10], [19, 10], [20, 10],[4, 12], [5, 12],[24, 12], [23, 11],\
                       [24, 11], [25, 11], [23, 10], [24, 10]]
             dlocations2=sorted(dlocations2, key= lambda a:a[0], reverse=True)
             i=0
-            while game_state.get_resource(game_state.CORES)>2:
+            while game_state.get_resource(game_state.CORES)>4:
                 if i==len(dlocations2):
                     break
                 if game_state.contains_stationary_unit(dlocations2[i]):
-                    game_state.attempt_remove(dlocations2[i])
+                    unit = game_state.game_map[dlocations2[i]]
+                    if unit.unit_type == ENCRYPTOR:
+                        game_state.attempt_remove(dlocations2[i])
+                    
                 game_state.attempt_spawn(DESTRUCTOR, dlocations2[i] )
                 i+=1
         
@@ -184,7 +187,8 @@ class AlgoStrategy(gamelib.AlgoCore):
             elocations=[[13, 7], [14, 7], [15, 7], [13, 6], [14, 6], [15, 6]]
             game_state.attempt_spawn(ENCRYPTOR, elocations )
 
-        
+        if self.detect_enemy_unit(game_state, unit_type=None, valid_x=[6,20], valid_y=[14, 27]) < 10:
+            game_state.attempt_remove([13,12]) 
         
 
     def build_reactive_defense(self, game_state):
