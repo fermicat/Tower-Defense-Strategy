@@ -84,14 +84,7 @@ class AlgoStrategy(gamelib.AlgoCore):
         #self.build_reactive_defense(game_state)
 
         # If the turn is less than 5, stall with Scramblers and wait to see enemy's base
-        if game_state.turn_number == 3:
-            if game_state.get_resource(game_state.BITS) >= game_state.type_cost(EMP) * 2:
-                spawn_location_options = [[24, 10], [23, 9], [14, 0], [13, 0]]
-                best_location = self.least_damage_spawn_location(game_state, spawn_location_options)
-                # attempt to locate fixed amount EMPs + as many PINGs as possible
-                game_state.attempt_spawn(EMP, best_location, 2)
-                game_state.attempt_spawn(PING, best_location, 1000)
-
+        
         if game_state.turn_number < 5:
             self.stall_with_scramblers(game_state, count = 1)
             ## @dev steal tower
@@ -312,7 +305,7 @@ class AlgoStrategy(gamelib.AlgoCore):
         # even if there is no large_attack, release a small amount of scramblers is a must
         if large_attack == False:
             if game_state.turn_number < 20:
-                self.stall_with_scramblers(game_state, count = 1)
+                self.stall_with_scramblers(game_state, count = 2)
             else:
                 self.stall_with_scramblers(game_state, count = 2)   
 
