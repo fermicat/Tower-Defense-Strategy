@@ -308,9 +308,9 @@ class AlgoStrategy(gamelib.AlgoCore):
         for different turns, we need different amount of scramblers
         """
         large_attack = False    # a flag to mark if there is large_attack or not
-        game_state.attempt_spawn(SCRAMBLER, [21, 7])
-        if game_state.turn_number < 3 or game_state.number > 15:
+        if game_state.turn_number < 2 or game_state.turn_number > 15:
             game_state.attempt_spawn(SCRAMBLER, [6, 7])
+            game_state.attempt_spawn(SCRAMBLER, [21, 7])
                 
         # combine enemy's BITS and turn number to predict large attack
         """
@@ -324,27 +324,21 @@ class AlgoStrategy(gamelib.AlgoCore):
         el
         """
         if game_state.turn_number < 20:
-            if game_state.get_resource(game_state.BITS, player_index = 1) >= 15:
-                self.stall_with_scramblers(game_state, count = 2)
-                large_attack = True
-            elif game_state.get_resource(game_state.BITS, player_index = 1) >= 10:
-                self.stall_with_scramblers(game_state, count = 1)
+            if game_state.get_resource(game_state.BITS, player_index = 1) >= 10:
+                game_state.attempt_spawn(SCRAMBLER, [21, 7])
                 large_attack = True
 
         elif game_state.turn_number < 30:
-            if game_state.get_resource(game_state.BITS, player_index = 1) >= 17:
-                self.stall_with_scramblers(game_state, count = 3)
-                large_attack = True
-            if game_state.get_resource(game_state.BITS, player_index = 1) >= 10:
-                self.stall_with_scramblers(game_state, count = 1)
+            if game_state.get_resource(game_state.BITS, player_index = 1) >= 12:
+                game_state.attempt_spawn(SCRAMBLER, [6, 7])
+                game_state.attempt_spawn(SCRAMBLER, [21, 7])
                 large_attack = True
 
         else:
-            if game_state.get_resource(game_state.BITS, player_index = 1) >= 18:
-                self.stall_with_scramblers(game_state, count = 3)
-                large_attack = True
             if game_state.get_resource(game_state.BITS, player_index = 1) >= 12:
-                self.stall_with_scramblers(game_state, count = 2)
+                game_state.attempt_spawn(SCRAMBLER, [6, 7])
+                game_state.attempt_spawn(SCRAMBLER, [21, 7])
+                self.stall_with_scramblers(game_state, count = 1)
                 large_attack = True
         
         # even if there is no large_attack, release a small amount of scramblers is a must
@@ -375,7 +369,7 @@ class AlgoStrategy(gamelib.AlgoCore):
                 game_state.attempt_spawn(PING, best_location, 1000)
 
         elif game_state.turn_number < 20:
-            if game_state.get_resource(game_state.BITS) >= game_state.type_cost(EMP) * 1 + game_state.type_cost(PING) * 8:
+            if game_state.get_resource(game_state.BITS) >= game_state.type_cost(EMP) * 1 + game_state.type_cost(PING) * 7:
                 best_location = self.least_damage_spawn_location(game_state, spawn_location_options)
                 # attempt to locate fixed amount EMPs + as many PINGs as possible
                 game_state.attempt_spawn(EMP, best_location, 2)
