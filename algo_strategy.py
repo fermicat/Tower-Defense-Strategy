@@ -70,7 +70,7 @@ class AlgoStrategy(gamelib.AlgoCore):
 
 
     def starter_strategy(self, game_state):
-        game_state.attempt_spawn(EMP, [24, 10], 3)
+        #game_state.attempt_spawn(EMP, [24, 10], 3)
         """
         For defense we will use a spread out layout and 2 Scramblers early on.
         We will place destructors near locations the opponent managed to score on.
@@ -349,7 +349,7 @@ class AlgoStrategy(gamelib.AlgoCore):
         """
         This is the big attack when we have enough armys 
         """
-        spawn_location_options = [[24, 10], [23, 9], [3, 10], [4, 9], [14, 0], [13, 0]]
+        spawn_location_options = [[24, 10], [23, 9], [14, 0], [13, 0]]
 
         if game_state.turn_number < 10:
             if game_state.get_resource(game_state.BITS) >= game_state.type_cost(EMP) * 2 + game_state.type_cost(PING) * 3:        
