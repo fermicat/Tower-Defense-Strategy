@@ -135,6 +135,9 @@ class AlgoStrategy(gamelib.AlgoCore):
         """
         Send out Scramblers at random locations to defend our base from enemy moving units.
         """
+        # count the total scrambler, default = 2 to save BITs
+        count = 2
+
         # We can spawn moving units on our edges so a list of all our edge locations
         friendly_edges = game_state.game_map.get_edge_locations(game_state.game_map.BOTTOM_LEFT) + game_state.game_map.get_edge_locations(game_state.game_map.BOTTOM_RIGHT)
         
@@ -143,7 +146,7 @@ class AlgoStrategy(gamelib.AlgoCore):
         deploy_locations = self.filter_blocked_locations(friendly_edges, game_state)
         
         # While we have remaining bits to spend lets send out scramblers randomly.
-        while game_state.get_resource(game_state.BITS) >= game_state.type_cost(SCRAMBLER) and len(deploy_locations) > 0:
+        while count > 2 and game_state.get_resource(game_state.BITS) >= game_state.type_cost(SCRAMBLER) and len(deploy_locations) > 0:
             # Choose a random deploy location.
             deploy_index = random.randint(0, len(deploy_locations) - 1)                 ## @dev put a weight on random?
             deploy_location = deploy_locations[deploy_index]
@@ -175,8 +178,8 @@ class AlgoStrategy(gamelib.AlgoCore):
 
         # Now spawn EMPs next to the line
         # By asking attempt_spawn to spawn 1000 units, it will essentially spawn as many as we have resources for
-        ## save for at least 4 EMP
-        game_state.attempt_spawn(EMP, [24, 10], 1000)
+        if game_state.get_resource(game_state.BITS) >= game_state.type_cost(EMP) * 4:
+            game_state.attempt_spawn(EMP, [24, 10], 1000)
 
     def least_damage_spawn_location(self, game_state, location_options):
         """
