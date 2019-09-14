@@ -86,7 +86,7 @@ class AlgoStrategy(gamelib.AlgoCore):
         else:
             # Now let's analyze the enemy base to see where their defenses are concentrated.
             # If they have many units in the front we can build a line for our EMPs to attack them at long range.
-            if self.detect_enemy_unit(game_state, unit_type=None, valid_x=None, valid_y=[14, 15]) > 10:
+            if self.detect_enemy_unit(game_state, unit_type=None, valid_x=None, valid_y=[14, 15]) > 10:             ## @dev only y = 14, 15 ?????
                 self.emp_line_strategy(game_state)
             else:
                 # They don't have many units in the front so lets figure out their least defended area and send Pings there.
@@ -145,7 +145,7 @@ class AlgoStrategy(gamelib.AlgoCore):
         # While we have remaining bits to spend lets send out scramblers randomly.
         while game_state.get_resource(game_state.BITS) >= game_state.type_cost(SCRAMBLER) and len(deploy_locations) > 0:
             # Choose a random deploy location.
-            deploy_index = random.randint(0, len(deploy_locations) - 1)
+            deploy_index = random.randint(0, len(deploy_locations) - 1)                 ## @dev put a weight on random?
             deploy_location = deploy_locations[deploy_index]
             
             game_state.attempt_spawn(SCRAMBLER, deploy_location)
@@ -160,6 +160,7 @@ class AlgoStrategy(gamelib.AlgoCore):
         """
         # First let's figure out the cheapest unit
         # We could just check the game rules, but this demonstrates how to use the GameUnit class
+        ## @dev remove these lines? simplly set to FILTER
         stationary_units = [FILTER, DESTRUCTOR, ENCRYPTOR]
         cheapest_unit = FILTER
         for unit in stationary_units:
@@ -174,6 +175,7 @@ class AlgoStrategy(gamelib.AlgoCore):
 
         # Now spawn EMPs next to the line
         # By asking attempt_spawn to spawn 1000 units, it will essentially spawn as many as we have resources for
+        ## save for at least 4 EMP
         game_state.attempt_spawn(EMP, [24, 10], 1000)
 
     def least_damage_spawn_location(self, game_state, location_options):
