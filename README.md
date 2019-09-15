@@ -1,4 +1,12 @@
-# Starter Algo
+# Tower Defense Strategy
+
+The library of this repo is originally ported from [correlation-one](https://github.com/correlation-one/C1GamesStarterKit) as the competition challange
+for [Terminal C1 Games](https://terminal.c1games.com/) @ Austin 9/14/2019 
+
+In this repo, we designed the algorithms for tower defense game strategy.
+
+![image](https://github.com/quantumcatwang/Tower-Defense-Strategy/battle.png)
+
 
 ## File Overview
 

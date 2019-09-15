@@ -87,17 +87,12 @@ class AlgoStrategy(gamelib.AlgoCore):
         
         if game_state.turn_number < 5:
             self.stall_with_scramblers(game_state, count = 1)
-            ## @dev steal tower
 
         else:
             # defend large attack, especially a chain of PING
             large_defense = self.scramblers_defend_large_attack(game_state)
 
-            ## @dev steal tower
-            if game_state.turn_number < 10 and large_defense == False:
-                True
-            
-            # @dev big attack
+            # big attack
             self.long_march(game_state)
 
             # this is starter's choice
@@ -200,7 +195,9 @@ class AlgoStrategy(gamelib.AlgoCore):
             # Build destructor one space above so that it doesn't block our own edge spawn locations
             build_location = [location[0], location[1]+1]
 
-            if build_location == [20, 7]:
+            if build_location[1] > 9:
+                continue                        # avoid block our path
+            elif build_location == [20, 7]:
                 build_location = [19, 7]
                 game_state.attempt_spawn(DESTRUCTOR, build_location)
 
